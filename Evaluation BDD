@@ -1,0 +1,73 @@
+-- Requête 1
+
+SELECT distinct orders.ShipName AS 'Société', customers.ContactName AS 'Contact', customers.ContactTitle AS 'Fonction', customers.Phone AS 'Téléphone' FROM orders
+JOIN customers ON customers.CustomerID = orders.CustomerID
+WHERE customers.Country = 'France'
+
+
+-- Requête 2
+
+SELECT products.ProductName AS 'Produit', products.UnitPrice AS 'Prix' FROM products
+JOIN suppliers ON suppliers.SupplierID = products.SupplierID
+WHERE suppliers.CompanyName = 'Exotic Liquids'
+
+
+-- Requête 3
+
+SELECT suppliers.CompanyName AS 'Fournisseur', products.UnitsInStock AS 'Nombre de produits' FROM products
+JOIN suppliers ON suppliers.supplierID = products.SupplierID
+WHERE suppliers.Country = 'France'
+GROUP BY suppliers.CompanyName
+ORDER BY products.UnitsInStock DESC 
+
+
+-- Requête 4
+
+SELECT orders.ShipName AS 'Client', COUNT(orders.OrderDate) AS 'Nbre commandes' FROM orders
+WHERE ShipCountry = 'France'
+GROUP BY orders.ShipName
+HAVING COUNT(orders.OrderDate) > 10
+
+
+-- Requête 5
+
+SELECT orders.ShipName AS 'Client', SUM(UnitPrice * Quantity) AS 'CA', orders.ShipCountry AS 'Pays' FROM orders
+JOIN `order details` ON `order details`.OrderID = orders.OrderID
+GROUP BY orders.ShipName
+ORDER BY SUM(UnitPrice * Quantity) DESC
+
+
+-- Requête 6
+
+SELECT distinct orders.ShipCountry AS 'Pays' FROM orders
+JOIN `order details` ON `order details`.OrderID = orders.OrderID
+JOIN products ON products.ProductID = `order details`.ProductID
+JOIN suppliers ON suppliers.SupplierID = products.SupplierID
+WHERE suppliers.CompanyName = 'Exotic Liquids'
+ORDER BY orders.ShipCountry ASC
+
+
+-- Requête 7
+
+SELECT SUM(UnitPrice * Quantity) AS 'Montant Ventes 97' FROM orders
+JOIN `order details` ON `order details`.OrderID = orders.OrderID
+WHERE YEAR(orders.OrderDate) = 1997
+
+
+-- Requête 8
+
+SELECT MONTH(orders.OrderDate) AS 'Mois 97', SUM(UnitPrice * Quantity) AS 'Montant Ventes 97' FROM orders
+JOIN `order details` ON `order details`.OrderID = orders.OrderID
+WHERE YEAR(orders.OrderDate) = 1997
+GROUP BY MONTH(orders.OrderDate)
+
+
+-- Requête 9
+
+SELECT MAX(orders.OrderDate) AS 'Date de dernière commande' FROM orders
+WHERE orders.ShipName = 'Du monde entier'
+
+
+-- Requête 10
+
+SELECT ROUND(AVG(DATEDIFF(orders.ShippedDate, orders.OrderDate)),0) AS 'Délai moyen de livraison en jours' FROM orders
